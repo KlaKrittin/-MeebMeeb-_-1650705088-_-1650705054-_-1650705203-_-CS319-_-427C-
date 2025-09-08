@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>พ่อจ๋าผมหิวข้าว - Mini Food Ordering</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-content">
+            <h1>พ่อจ๋าผมหิวข้าว</h1>
+            <button id="toggleThemeBtn" aria-label="Toggle theme">โหมดกลางคืน</button>
+        </div>
+    </header>
+
+    <main class="container layout">
+        <section class="controls">
+            <h2>ค้นหาและตัวกรอง</h2>
+            <form id="searchForm" class="controls-form" autocomplete="off">
+                <div class="field">
+                    <label for="searchInput">ค้นหาเมนู</label>
+                    <input id="searchInput" name="q" type="search" placeholder="เช่น ผัดไทย, ไก่ทอด" />
+                </div>
+                <div class="field">
+                    <label for="categorySelect">หมวดหมู่</label>
+                    <select id="categorySelect" name="category">
+                        <option value="all">ทั้งหมด</option>
+                        <option value="rice">ข้าว</option>
+                        <option value="noodle">ก๋วยเตี๋ยว</option>
+                        <option value="drink">เครื่องดื่ม</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="priceRange">ช่วงราคา: <span id="priceRangeLabel"></span></label>
+                    <input id="priceRange" name="price" type="range" min="0" max="200" step="10" value="200" />
+                </div>
+                <div class="actions">
+                    <button type="reset">ล้างตัวกรอง</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="menu">
+            <h2>เมนูวันนี้</h2>
+            <div id="menuGrid" class="menu-grid" aria-live="polite"></div>
+        </section>
+
+        <aside class="cart">
+            <h2>ตะกร้า</h2>
+            <ul id="cartList" class="cart-list"></ul>
+            <div class="cart-summary">
+                <div class="row"><span>ยอดรวม</span><strong id="subtotal">฿0.00</strong></div>
+                <div class="row"><span>ส่วนลด</span><strong id="discount">- ฿0.00</strong></div>
+                <div class="row total"><span>ต้องชำระ</span><strong id="total">฿0.00</strong></div>
+            </div>
+
+            <form id="promoForm" class="promo-form">
+                <label for="promoInput">โค้ดส่วนลด</label>
+                <div class="inline">
+                    <input id="promoInput" name="promo" type="text" placeholder="เช่น EAT10" />
+                    <button type="submit">ใช้โค้ด</button>
+                </div>
+                <p id="promoMsg" class="help"></p>
+            </form>
+
+            <div class="cart-actions">
+                <button id="clearCartBtn" class="secondary">ล้างตะกร้า</button>
+                <button id="checkoutToggleBtn" class="primary">ชำระเงิน</button>
+            </div>
+        </aside>
+    </main>
+
+    <section id="checkoutPanel" class="checkout hidden" aria-hidden="true">
+        <div class="container">
+            <h2>ชำระเงิน</h2>
+            <form id="checkoutForm" novalidate>
+                <div class="grid">
+                    <div class="field">
+                        <label for="customerName">ชื่อ-สกุล</label>
+                        <input id="customerName" name="name" type="text" required />
+                    </div>
+                    <div class="field">
+                        <label for="customerPhone">เบอร์โทร</label>
+                        <input id="customerPhone" name="phone" type="tel" pattern="[0-9]{9,10}" required />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="customerAddress">ที่อยู่จัดส่ง</label>
+                    <textarea id="customerAddress" name="address" rows="3" required></textarea>
+                </div>
+                <div class="grid">
+                    <div class="field">
+                        <label>วิธีรับอาหาร</label>
+                        <div class="inline">
+                            <label><input type="radio" name="method" value="delivery" checked /> จัดส่ง</label>
+                            <label><input type="radio" name="method" value="pickup" /> รับเอง</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="schedule">เวลาจัดส่ง</label>
+                        <input id="schedule" name="schedule" type="time" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="note">หมายเหตุ</label>
+                    <input id="note" name="note" type="text" placeholder="เผ็ดน้อย, ไม่ใส่ผงชูรส" />
+                </div>
+                <div class="actions">
+                    <button type="button" id="closeCheckoutBtn" class="secondary">ย้อนกลับ</button>
+                    <button type="submit" class="primary">ยืนยันคำสั่งซื้อ</button>
+                </div>
+                <p id="checkoutMsg" class="help"></p>
+            </form>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="container small">
+            <p></p>
+        </div>
+    </footer>
+
+    <script src="app.js" defer></script>
+</body>
+
+</html>
+
+
