@@ -70,20 +70,44 @@ const MENU = [
       { name: 'ไม่ใส่น้ำตาล', price: 0 }
     ]
   },
+  { 
+    id: 'panang', 
+    name: 'พะแนง', 
+    category: 'rice', 
+    basePrice: 75, 
+    img: 'IMG/พะแนง.jpg',
+    ingredients: [
+      { name: 'ไก่', price: 0 },
+      { name: 'หมู', price: 0 },
+      { name: 'เนื้อ', price: 10 },
+      { name: 'กุ้ง', price: 15 }
+    ]
+  },
+  { 
+    id: 'greencurry', 
+    name: 'แกงเขียวหวาน', 
+    category: 'rice', 
+    basePrice: 70, 
+    img: 'IMG/แกงเขียวหวาน.jpg',
+    ingredients: [
+      { name: 'ไก่', price: 0 },
+      { name: 'หมู', price: 0 },
+      { name: 'เนื้อ', price: 10 },
+      { name: 'กุ้ง', price: 15 }
+    ]
+  },
 ];
 
 const state = {
   query: '',
   category: 'all',
   maxPrice: 200,
-  cart: loadCart(),
+  cart: {},
   promo: null,
 };
 
-function loadCart() {
-  try { return JSON.parse(localStorage.getItem('cart') || '{}'); } catch { return {}; }
-}
-function saveCart() { localStorage.setItem('cart', JSON.stringify(state.cart)); }
+// Cart no longer persists - starts fresh each time
+function saveCart() { /* Cart not saved to localStorage */ }
 
 
 const formatBaht = num => `฿${num.toFixed(2)}`;
@@ -428,14 +452,18 @@ function addCustomizedItemToCart() {
   const special = specialRequest.value.trim();
   const qty = clamp(Number(quantity.value || 1), 1, 20);
   
-  // Create detailed cart key
+  // Create detailed cart key - include ALL customizations to separate items
   const proteinKey = selectedProtein ? `-${selectedProtein}` : '';
+  const spiceKey = selectedSpice !== 'เผ็ดน้อย' ? `-${selectedSpice}` : '';
+  const riceKey = currentItem.category === 'rice' && selectedRice !== 'ข้าวสวย' ? `-${selectedRice}` : '';
+  const noodleKey = currentItem.category === 'noodle' && selectedNoodle !== 'เส้นใหญ่' ? `-${selectedNoodle}` : '';
   const sizeKey = selectedSize && selectedSize !== 'ขนาดปกติ' ? `-${selectedSize}` : '';
   const iceKey = selectedIce && selectedIce !== 'น้ำแข็งปกติ' ? `-${selectedIce}` : '';
   const extrasKey = extras.length > 0 ? `-${extras.join(',')}` : '';
-  const cartKey = `${currentItem.id}${proteinKey}${sizeKey}${iceKey}${extrasKey}`;
+  const specialKey = special ? `-${special.replace(/\s+/g, '_')}` : '';
+  const cartKey = `${currentItem.id}${proteinKey}${spiceKey}${riceKey}${noodleKey}${sizeKey}${iceKey}${extrasKey}${specialKey}`;
   
-  // Create item details for display
+  // Create item details for display - include ALL customizations
   const details = [];
   if (selectedProtein) details.push(selectedProtein);
   if (selectedSpice !== 'เผ็ดน้อย') details.push(selectedSpice);
@@ -447,6 +475,9 @@ function addCustomizedItemToCart() {
   if (special) details.push(`(${special})`);
   
   const displayName = details.length > 0 ? `${currentItem.name} (${details.join(', ')})` : currentItem.name;
+  
+  console.log('Cart key generated:', cartKey);
+  console.log('Display name:', displayName);
   
   // Calculate prices
   const proteinPrice = selectedProtein ? Number(proteinSelect.selectedOptions[0]?.dataset.price || 0) : 0;
