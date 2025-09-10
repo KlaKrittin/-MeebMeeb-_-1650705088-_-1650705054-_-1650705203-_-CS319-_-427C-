@@ -71,52 +71,176 @@
                 <button id="clearCartBtn" class="secondary">ล้างตะกร้า</button>
                 <button id="checkoutToggleBtn" class="primary">ชำระเงิน</button>
             </div>
-        </aside>
-    </main>
 
-    <section id="checkoutPanel" class="checkout hidden" aria-hidden="true">
-        <div class="container">
-            <h2>ชำระเงิน</h2>
-            <form id="checkoutForm" novalidate>
-                <div class="grid">
-                    <div class="field">
-                        <label for="customerName">ชื่อ-สกุล</label>
-                        <input id="customerName" name="name" type="text" required />
-                    </div>
-                    <div class="field">
-                        <label for="customerPhone">เบอร์โทร</label>
-                        <input id="customerPhone" name="phone" type="tel" pattern="[0-9]{9,10}" required />
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="customerAddress">ที่อยู่จัดส่ง</label>
-                    <textarea id="customerAddress" name="address" rows="3" required></textarea>
-                </div>
-                <div class="grid">
-                    <div class="field">
-                        <label>วิธีรับอาหาร</label>
-                        <div class="inline">
-                            <label><input type="radio" name="method" value="delivery" checked /> จัดส่ง</label>
-                            <label><input type="radio" name="method" value="pickup" /> รับเอง</label>
+            <!-- Checkout Form -->
+            <div id="checkoutFormContainer" class="checkout-form hidden">
+                <h3>ชำระเงิน</h3>
+                <form id="checkoutForm" novalidate>
+                    <div class="grid">
+                        <div class="field">
+                            <label for="customerName">ชื่อ-สกุล</label>
+                            <input id="customerName" name="name" type="text" required />
+                        </div>
+                        <div class="field">
+                            <label for="customerPhone">เบอร์โทร</label>
+                            <input id="customerPhone" name="phone" type="tel" pattern="[0-9]{9,10}" required />
                         </div>
                     </div>
                     <div class="field">
-                        <label for="schedule">เวลาจัดส่ง</label>
-                        <input id="schedule" name="schedule" type="time" />
+                        <label for="customerAddress">ที่อยู่จัดส่ง</label>
+                        <textarea id="customerAddress" name="address" rows="3" required></textarea>
+                    </div>
+                    <div class="grid">
+                        <div class="field">
+                            <label>วิธีรับอาหาร</label>
+                            <div class="inline">
+                                <label><input type="radio" name="method" value="delivery" checked /> จัดส่ง</label>
+                                <label><input type="radio" name="method" value="pickup" /> รับเอง</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="schedule">เวลาจัดส่ง</label>
+                            <input id="schedule" name="schedule" type="time" />
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="note">หมายเหตุ</label>
+                        <input id="note" name="note" type="text" placeholder="เผ็ดน้อย, ไม่ใส่ผงชูรส" />
+                    </div>
+                    <div class="actions">
+                        <button type="button" id="closeCheckoutBtn" class="secondary">ย้อนกลับ</button>
+                        <button type="submit" class="primary">ยืนยันคำสั่งซื้อ</button>
+                    </div>
+                    <p id="checkoutMsg" class="help"></p>
+                </form>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Ingredient Selection Popup -->
+    <section id="ingredientPopup" class="popup hidden" aria-hidden="true">
+        <div class="popup-overlay"></div>
+        <div class="popup-content">
+            <div class="popup-header">
+                <h2 id="popupTitle">เลือกส่วนผสม</h2>
+                <button id="closePopupBtn" class="close-btn" aria-label="ปิด">×</button>
+            </div>
+            <div class="popup-body">
+                <div class="item-info">
+                    <img id="popupImage" src="" alt="">
+                    <div class="item-details">
+                        <h3 id="popupItemName"></h3>
+                        <div class="base-price">ราคาเริ่มต้น: <span id="popupBasePrice"></span></div>
                     </div>
                 </div>
-                <div class="field">
-                    <label for="note">หมายเหตุ</label>
-                    <input id="note" name="note" type="text" placeholder="เผ็ดน้อย, ไม่ใส่ผงชูรส" />
-                </div>
-                <div class="actions">
-                    <button type="button" id="closeCheckoutBtn" class="secondary">ย้อนกลับ</button>
-                    <button type="submit" class="primary">ยืนยันคำสั่งซื้อ</button>
-                </div>
-                <p id="checkoutMsg" class="help"></p>
-            </form>
+                
+                <form id="ingredientForm">
+                    <div class="field">
+                        <label id="proteinLabel" for="proteinSelect">เลือกเนื้อสัตว์:</label>
+                        <select id="proteinSelect" name="protein">
+                            <option value="">เลือกเนื้อสัตว์</option>
+                        </select>
+                    </div>
+                    
+                    <div class="field">
+                        <label for="spiceLevel">ระดับความเผ็ด:</label>
+                        <select id="spiceLevel" name="spice">
+                            <option value="ไม่เผ็ด">ไม่เผ็ด</option>
+                            <option value="เผ็ดน้อย" selected>เผ็ดน้อย</option>
+                            <option value="เผ็ดปานกลาง">เผ็ดปานกลาง</option>
+                            <option value="เผ็ดมาก">เผ็ดมาก</option>
+                            <option value="เผ็ดมากๆ">เผ็ดมากๆ</option>
+                        </select>
+                    </div>
+                    
+                    <div class="field">
+                        <label for="riceType">ประเภทข้าว (สำหรับเมนูข้าว):</label>
+                        <select id="riceType" name="rice">
+                            <option value="ข้าวสวย">ข้าวสวย</option>
+                            <option value="ข้าวเหนียว">ข้าวเหนียว</option>
+                            <option value="ข้าวกล้อง">ข้าวกล้อง</option>
+                        </select>
+                    </div>
+                    
+                    <div class="field">
+                        <label for="noodleType">ประเภทเส้น (สำหรับเมนูเส้น):</label>
+                        <select id="noodleType" name="noodle">
+                            <option value="เส้นใหญ่">เส้นใหญ่</option>
+                            <option value="เส้นเล็ก">เส้นเล็ก</option>
+                            <option value="เส้นหมี่">เส้นหมี่</option>
+                            <option value="เส้นบะหมี่">เส้นบะหมี่</option>
+                        </select>
+                    </div>
+                    
+                    <div class="field" id="drinkOptions">
+                        <label for="drinkSize">ขนาดเครื่องดื่ม:</label>
+                        <select id="drinkSize" name="size">
+                            <option value="ขนาดปกติ" data-price="0">ขนาดปกติ</option>
+                            <option value="ขนาดใหญ่" data-price="10">ขนาดใหญ่ (+฿10)</option>
+                            <option value="ขนาดเล็ก" data-price="-5">ขนาดเล็ก (-฿5)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="field" id="drinkIce">
+                        <label for="iceLevel">ระดับน้ำแข็ง:</label>
+                        <select id="iceLevel" name="ice">
+                            <option value="น้ำแข็งปกติ">น้ำแข็งปกติ</option>
+                            <option value="น้ำแข็งน้อย">น้ำแข็งน้อย</option>
+                            <option value="ไม่ใส่น้ำแข็ง">ไม่ใส่น้ำแข็ง</option>
+                            <option value="น้ำแข็งเยอะ">น้ำแข็งเยอะ</option>
+                        </select>
+                    </div>
+                    
+                    <div class="field" id="extraIngredients">
+                        <label for="extraIngredients">ส่วนผสมเพิ่มเติม:</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="extras" value="ไข่ดาว"> ไข่ดาว (+฿15)</label>
+                            <label><input type="checkbox" name="extras" value="ไข่เจียว"> ไข่เจียว (+฿10)</label>
+                            <label><input type="checkbox" name="extras" value="ผักเพิ่ม"> ผักเพิ่ม (+฿5)</label>
+                            <label><input type="checkbox" name="extras" value="ถั่วงอก"> ถั่วงอก (+฿5)</label>
+                            <label><input type="checkbox" name="extras" value="ถั่วลิสง"> ถั่วลิสง (+฿5)</label>
+                        </div>
+                    </div>
+                    
+                    <div class="field">
+                        <label for="specialRequest">คำขอพิเศษ:</label>
+                        <textarea id="specialRequest" name="special" rows="3" placeholder="เช่น ไม่ใส่ผงชูรส, ใส่ผักเยอะๆ, ไม่ใส่หอมใหญ่"></textarea>
+                    </div>
+                    
+                    <div class="field">
+                        <label for="quantity">จำนวน:</label>
+                        <input id="quantity" name="quantity" type="number" min="1" max="20" value="1">
+                    </div>
+                    
+                    <div class="price-summary">
+                        <div class="price-breakdown">
+                            <div class="price-item">
+                                <span>ราคาเริ่มต้น:</span>
+                                <span id="summaryBasePrice">฿0.00</span>
+                            </div>
+                            <div class="price-item">
+                                <span>เนื้อสัตว์:</span>
+                                <span id="summaryProteinPrice">฿0.00</span>
+                            </div>
+                            <div class="price-item">
+                                <span>ส่วนผสมเพิ่มเติม:</span>
+                                <span id="summaryExtrasPrice">฿0.00</span>
+                            </div>
+                            <div class="price-item total">
+                                <span>รวม:</span>
+                                <span id="summaryTotalPrice">฿0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="popup-footer">
+                <button type="button" id="cancelPopupBtn" class="secondary">ยกเลิก</button>
+                <button type="button" id="addToCartBtn" class="primary">ใส่ตะกร้า</button>
+            </div>
         </div>
     </section>
+
 
     <footer class="site-footer">
         <div class="container small">
